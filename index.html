@@ -5,8 +5,16 @@
 <title>Class Credit Sorter</title>
 <body>
 
-<p>Hello World!</p>
-<button onclick="posttest()">Click this button to print CS-Major info to your console</button>
+<p>Welcome! Please enter your information here.</p>
+<!-- <button onclick="posttest()">Click this button to print CS-Major info to your console</button> -->
+<form onsubmit="handleFormSubmit(event)">
+    <label for="major">Major:</label>
+    <input type="text" id="major" name="major"><br><br>
+    <label for="minors">Minor(s):</label>
+    <input type="text" id="minors" name="minors"><br><br>
+    <label for="finishedClsses">Finished classes:</label>
+    <input type="text" id="finishedClasses" name="finishedClasses"><br><br>
+</form>
 
 </body>
 </html> 

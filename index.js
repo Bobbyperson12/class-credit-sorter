@@ -3,20 +3,25 @@ const test = () => {
   console.log('Hello World!');
 }
 
-// Define the data
-const data = {
-  degree: "CS-Major",
-  other_info: 123
-};
+function handleFormSubmit(event) {
+  // Prevent the form from submitting to a server
+  event.preventDefault();
 
-// Make the POST 
-const posttest = () => {
+  // Get the value of the "major" input
+  const majorValue = document.getElementById("major").value;
+  const minorValue = document.getElementById("minors").value;
+  const completedValue = document.getElementById("finishedclasses").value;
+  let data_new = {
+    degree: majorValue,
+    minors: minorValue,
+    completed: completedValue
+  };
   fetch("http://localhost:8080/", {
     method: "POST",
     headers: {
       "Content-Type": "application/json"
     },
-    body: JSON.stringify(data)  // Convert the data object to a JSON string
+    body: JSON.stringify(data_new)  // Convert the data object to a JSON string
   })
     .then(response => response.json())  // Parse the response as JSON
     .then(data => {
