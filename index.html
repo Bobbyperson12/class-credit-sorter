@@ -4,17 +4,25 @@
 <script src="index.js"></script>
 <title>Class Credit Sorter</title>
 <body>
+<div class="logout">
+    <input type="button" value="Log Out">
+</div>
 
-<p>Welcome! Please enter your information here.</p>
+<div class="welcome"><p>Welcome! Please enter your information here.</p></div>
+
 <!-- <button onclick="posttest()">Click this button to print CS-Major info to your console</button> -->
 <form onsubmit="handleFormSubmit(event)">
-    <label for="major">Major:</label>
-    <input type="text" id="major" name="major"><br><br>
-    <label for="minors">Minor(s):</label>
-    <input type="text" id="minors" name="minors"><br><br>
-    <label for="finishedClsses">Finished classes:</label>
-    <input type="text" id="finishedClasses" name="finishedClasses"><br><br>
+    <div class="major"><label for="major">Major:</label>
+        <input type="text" id="major" name="major"><br><br></div>
+    <div class="minor"><label for="minors">Minor(s):</label>
+        <input type="text" id="minors" name="minors"><br><br></div>
+    <div class="finClass"><label for="finishedClsses">Finished Classes:</label>
+        <input type="text" id="finishedClasses" name="finishedClasses"><br><br></div>
+    <div class="SubmitButton">
+        <input type="submit" value="Submit">
+    </div>
 </form>
-
 </body>
+
+
 </html> 
