@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html>
+<link rel="stylesheet" href="{{ url_for('static', filename='css/index.css') }}">
+<script src="{{ url_for('static', filename='js/index.js') }}"></script>
+<title>Class Credit Sorter</title>
+<body>
+
+<div class="logout">
+    <button class="button-6" onclick="logout()" role="button">Logout</button>
+</div>
+
+<h1>Welcome! Please enter your information here.</h1>
+<!-- <button onclick="posttest()">Click this button to print CS-Major info to your console</button> -->
+<form onsubmit="handleFormSubmit(event)">
+    <div class="major"><label for="major">Major:</label>
+        <input type="text" id="major" name="major"><br><br></div>
+    <div class="minor"><label for="minors">Minor(s):</label>
+        <input type="text" id="minors" name="minors"><br><br></div>
+    <div class="finClass"><label for="finishedClsses">Finished Classes:</label>
+        <input type="text" id="finishedClasses" name="finishedClasses"><br><br></div>
+    <div class="SubmitButton">
+        <input class="button-6" type="submit" value="Submit">
+    </div>
+</form>
+</body>
+
+</body>
+</html> 

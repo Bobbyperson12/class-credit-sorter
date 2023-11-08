@@ -10,7 +10,7 @@ function handleFormSubmit(event) {
   // Get the value of the "major" input
   const majorValue = document.getElementById("major").value;
   const minorValue = document.getElementById("minors").value;
-  const completedValue = document.getElementById("finishedclasses").value;
+  const completedValue = document.getElementById("finishedClasses").value;
   let data_new = {
     degree: majorValue,
     minors: minorValue,
@@ -30,4 +30,8 @@ function handleFormSubmit(event) {
     .catch(error => {
       console.error("Error:", error);  // Log any errors
     });
+}
+
+function logout() {
+  window.location.href = "/logout"
 }

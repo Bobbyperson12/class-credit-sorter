@@ -1,131 +1,225 @@
-from http.server import BaseHTTPRequestHandler, HTTPServer
+from flask import Flask, request, jsonify, render_template, redirect, url_for
+import flask
+from flask_cors import CORS
+from urllib.parse import urlparse, urljoin
+import os
 from pathlib import Path
-import json
+import flask_login
+import secrets, string
 
-data_folder = Path("backend/data/") # TODO: Will cause errors if not run from main folder, needs a fix.
+data_folder = Path("backend/data/")
 
-hostName = "localhost"
-serverPort = 8080
+app = Flask(__name__)
+CORS(app)
+# This will enable CORS for all routes, which is a security issue. 
+# Must be changed in production.
 
-class MainServer(BaseHTTPRequestHandler):
-    # Setup basic json request
-    def _set_headers(self):
-        self.send_response(200)
-        self.send_header('Content-type', 'application/json')
-        self.send_header("Access-Control-Allow-Origin", "*") # needs to be changed off of * in a prod environment
-        self.send_header("Access-Control-Allow-Methods", "GET, POST, OPTIONS")  # Allow these methods
-        self.send_header("Access-Control-Allow-Headers", "Content-Type")  # Allow Content-Type header
-        self.end_headers()
+login_manager = flask_login.LoginManager()
 
-    def do_OPTIONS(self): # inform browser of what methods are allowed
-        self._set_headers()
+login_manager.init_app(app)
 
-        
-    # GET sends back the required classes for the degree
-    def do_GET(self):
-        self._set_headers()
-        degree = self.path[1:] # Remove the beginning slash
-        file_lines = self.get_required_classes(degree)
+login_manager.login_view = 'login'
 
-        if file_lines == []:
-            degree_message = None,
-            required_classes = None,
-            error = True, 
-            error_message = "Degree not found."
-        else:
-            degree_message = self.get_full_degree_name(degree)
-            required_classes = file_lines
-            error = False
-            error_message = None
-        response = {
+app.secret_key = ''.join(secrets.choice(string.ascii_letters) for i in range(256))
+
+not_protected = ["login", "logout"]
+
+class_lookup = {}
+
+for file in os.listdir(data_folder):
+    if file.endswith(".csv") and "Major" in file:
+        with open(str(data_folder.absolute()) + "/" + file, "r") as f:
+            file_lines = [line.rstrip() for line in f.readlines()]
+            class_lookup[file_lines[0]] = file[:-4]
+print(class_lookup)
+
+def is_safe_url(target):
+    ref_url = urlparse(request.host_url)
+    test_url = urlparse(urljoin(request.host_url, target))
+    # Ensure that the target URL is on the same domain as the host URL
+    return test_url.scheme in ('http', 'https') and ref_url.netloc == test_url.netloc
+
+def redirect_back(default='home', **kwargs):
+    for target in request.args.get('next'), request.referrer:
+        if not target:
+            continue
+        if is_safe_url(target):
+            return redirect(target)
+    return redirect(url_for(default, **kwargs))
+
+def validate_email(email):
+    if email == None:
+        return False
+    email = email.lower()
+    parts = email.split("@")
+    if len(parts) != 2:
+        return False
+    if parts[1] != "my.erau.edu":
+        return False
+    for i in ["_", ".", "-", "@"]:
+        if i in parts[0]:
+            return False
+    return True
+
+
+def is_admin(email):  # temporary to redirect to admin page
+    if "admin" in email:
+        return True
+    return False
+
+
+def is_registrar(email):  # temporary to redirect to registrar page
+    if "registrar" in email:
+        return True
+    return False
+
+
+class User(flask_login.UserMixin):
+    pass
+
+@app.route('/')
+@flask_login.login_required
+def home():
+    return render_template('index.html')
+
+@app.route("/logout")
+def logout():
+    flask_login.logout_user()
+    return "Logged out"
+
+
+@app.route("/login", methods=["GET", "POST"])
+def login():
+    if flask.request.method == "GET":
+        return render_template("login.html")
+
+    email = flask.request.form["email"]
+    if validate_email(email) and flask.request.form["password"] == "secret":
+        user = User()
+        user.id = email
+        flask_login.login_user(user)
+        # redirect_back func is broken, so here I will add full logic through if statements. I hate this.
+        if is_admin(email):
+            return redirect("/admin")
+        if is_registrar(email):
+            return redirect("/registrar")
+        return redirect("/")
+    return "Bad login"
+
+
+@app.route("/admin")
+@flask_login.login_required
+def admin():
+    return "Logged in as: " + flask_login.current_user.id
+
+
+@login_manager.user_loader
+def user_loader(email):
+    if validate_email(email) == False:
+        return
+
+    user = User()
+    user.id = email
+    return user
+
+
+@login_manager.request_loader
+def request_loader(request):
+    email = request.form.get("email")
+    if validate_email(email) == False:
+        return
+
+    user = User()
+    user.id = email
+    return user
+
+# this is for debugging and needs to be removed for production
+@app.route("/<degree>", methods=["GET"])
+def get_degree_courses(degree):
+    file_lines = get_required_courses(degree)
+
+    if not file_lines:
+        return jsonify(
+            {
+                "degree": None,
+                "required_classes": None,
+                "error": True,
+                "error_message": "Degree not found.",
+            }
+        )
+
+    degree_message = get_full_degree_name(degree)
+    return jsonify(
+        {
             "degree": degree_message,
-            "required_classes": required_classes,
-            "error": error,
-            "error_message": error_message
+            "required_classes": file_lines,
+            "error": False,
+            "error_message": None,
         }
+    )
 
-        self.wfile.write(bytes(json.dumps(response), "utf-8"))
-        
-    def do_POST(self):
-        self._set_headers()
 
-        # Extract and parse POST data
-        content_length = int(self.headers['Content-Length'])  # Get the size of data
-        post_data = self.rfile.read(content_length)  # Get the data
-        parsed_data = json.loads(post_data)  # Parse the JSON data
+@app.route("/", methods=["POST"])
+def post_degree_courses():
+    data = request.json
 
-        # Extract the required data
-        degree = parsed_data.get("degree", "")
-        # other_info = parsed_data.get("other_info")  # If you need other info
+    degree = data.get("degree")
+    minors = data.get("minors")
+    completed = data.get("completed")
 
-        file_lines = self.get_required_classes(degree)
+    print(f"{degree = }")
+    print(f"{minors = }")
+    print(f"{completed = }")
 
-        if file_lines == []:
-            degree_message = None
-            required_classes = None
-            error = True
-            error_message = "Degree not found."
-        else:
-            degree_message = self.get_full_degree_name(degree)
-            required_classes = file_lines
-            error = False
-            error_message = None
+    courses = get_required_courses(degree)
 
-        response = {
+    for course in courses[:]:
+        if course in completed:
+            courses.remove(course)
+
+    if not courses:
+        return jsonify(
+            {
+                "degree": None,
+                "required_classes": None,
+                "error": True,
+                "error_message": "Degree not found.",
+            }
+        )
+
+    degree_message = get_full_degree_name(degree)
+    return jsonify(
+        {
             "degree": degree_message,
-            "required_classes": required_classes,
-            "error": error,
-            "error_message": error_message
+            "required_classes": courses,
+            "error": False,
+            "error_message": None,
         }
+    )
 
-        self.wfile.write(bytes(json.dumps(response), "utf-8"))
+@app.before_request
+def before_request():
+    if request.path.startswith('/static/') or request.endpoint == 'logout':
+        return  # Allow access to static files and logout without being logged in
+    if not flask_login.current_user.is_authenticated and request.endpoint != 'login':
+        return redirect(url_for('login', next=request.url))
 
-        
-    def get_required_classes(self, degree) -> list:
-        """
-        Takes a degree as input and returns the required classes for that
-        degree.
-        
-        Args:
-            degree (str): Shortened version of the degree name. Ex: "CS-Major"
-
-        Returns:
-            str: Required classes for the degree
-        """
-        try:
-            with open(str(data_folder.absolute()) + "/" + degree + ".csv", "r") as f:
-                file_lines = [line.rstrip() for line in f.readlines()] # Get each class and strip the newline character
-                return file_lines[1:] # First line is the degree name, so we skip it
-        except FileNotFoundError:
-            return []
-        
-    def get_full_degree_name(self, degree: str) -> str:
-        """
-        Takes a degree as input and returns the full name of the degree.
-
-        Args:
-            degree (str): Shortened version of the degree name. Ex: "CS-Major"
-
-        Returns:
-            str: Full degree name
-        """
-        try:
-            with open(str(data_folder.absolute()) + "/" + degree + ".csv", "r") as f:
-                file_lines = [line.rstrip() for line in f.readlines()] # Get each class and strip the newline character
-                return file_lines[0] # type: ignore # First line is the degree name, so we only return that
-        except FileNotFoundError:
-            return ""
-        
-    
-    
-if __name__ == "__main__":        
-    webServer = HTTPServer((hostName, serverPort), MainServer)
-    print("Server started http://%s:%s" % (hostName, serverPort))
-
+def get_required_courses(degree):
     try:
-        webServer.serve_forever()
-    except KeyboardInterrupt:
-        pass
+        with open(str(data_folder.absolute()) + "/" + degree + ".csv", "r") as f:
+            file_lines = [line.rstrip() for line in f.readlines()]
+            return file_lines[1:]
+    except FileNotFoundError:
+        return []
 
-    webServer.server_close()
-    print("Server stopped.")
+def get_full_degree_name(degree):
+    try:
+        with open(str(data_folder.absolute()) + "/" + degree + ".csv", "r") as f:
+            file_lines = [line.rstrip() for line in f.readlines()]
+            return file_lines[0]
+    except FileNotFoundError:
+        return ""
+
+
+if __name__ == "__main__":
+    app.run(host="localhost", port=8080, debug=True)
