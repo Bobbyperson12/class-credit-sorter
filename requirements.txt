@@ -1,1 +1,5 @@
 pypdf
+flask
+flask-login
+flask-cors
+gunicorn

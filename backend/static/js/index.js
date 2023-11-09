@@ -31,3 +31,7 @@ function handleFormSubmit(event) {
       console.error("Error:", error);  // Log any errors
     });
 }
+
+function logout() {
+  window.location.href = "/logout"
+}
