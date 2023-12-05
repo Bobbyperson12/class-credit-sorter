@@ -36,7 +36,7 @@ class_lookup = {}
 
 # there's no way to properly get a student ID, so we're going to cheat a little for demonstration purposes
 def get_student_id(input_string):
-    if "advisor" or "registrar" in input_string:
+    if "advisor" in input_string or "registrar" in input_string:
         return "N/A"
     # Convert each character to its ASCII value and sum them up
     sum_ascii = sum(ord(char) for char in input_string)
@@ -270,7 +270,7 @@ def post_degree_courses():
         data.append(
             [course.split(",")[1], prereq_string, credits, needed, satisfied_string]
         )  # it works, not changing, don't touch it
-    table = Table(data, colWidths=[(c._pagesize[0]-50) / 5])
+    table = Table(data)
     table.setStyle(
         TableStyle(
             [
