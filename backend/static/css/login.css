@@ -1,85 +1,89 @@
-html, body {
-    height: 100%;
-  }
-  
-  html {
-    display: table;
-    margin: auto;
-  }
-  
-  body {
-    display: table-cell;
-    vertical-align: middle;
-    background-color: rgb(20, 56, 84);
-    color: rgb(211, 211, 221);
-  }
-  
-  form{
-    font-family: Georgia, serif;
-    margin: auto;
-    width: 50%;
-    padding: 10px;
-    border-style: double;
-    border-width: 10px;
-  }
-  h1 {
-    text-align: middle;
-    margin: 0;
-    padding-bottom: 0.5em;
-  }
-  
-  /* CSS */
-  .button-6 {
-    align-items: center;
-    background-color: #FFFFFF;
-    border: 1px solid rgba(0, 0, 0, 0.1);
-    border-radius: .25rem;
-    box-shadow: rgba(0, 0, 0, 0.02) 0 1px 3px 0;
-    box-sizing: border-box;
-    color: rgba(0, 0, 0, 0.85);
-    cursor: pointer;
-    display: inline-flex;
-    font-family: system-ui,-apple-system,system-ui,"Helvetica Neue",Helvetica,Arial,sans-serif;
-    font-size: 16px;
-    font-weight: 600;
-    justify-content: center;
-    line-height: 1.25;
-    margin: 0;
-    min-height: 3rem;
-    padding: calc(.875rem - 1px) calc(1.5rem - 1px);
-    position: relative;
-    text-decoration: none;
-    transition: all 250ms;
-    user-select: none;
-    -webkit-user-select: none;
-    touch-action: manipulation;
-    vertical-align: baseline;
-    width: auto;
-  }
-  
-  .button-6:hover,
-  .button-6:focus {
-    border-color: rgba(0, 0, 0, 0.15);
-    box-shadow: rgba(0, 0, 0, 0.1) 0 4px 12px;
-    color: rgba(0, 0, 0, 0.65);
-  }
-  
-  .button-6:hover {
-    transform: translateY(-1px);
-  }
-  
-  .button-6:active {
-    background-color: #F0F0F1;
-    border-color: rgba(0, 0, 0, 0.15);
-    box-shadow: rgba(0, 0, 0, 0.06) 0 2px 4px;
-    color: rgba(0, 0, 0, 0.65);
-    transform: translateY(0);
-  }
+body {
+  font-family: Arial, sans-serif;
+  background-color: #f4f4f4;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+}
 
-  .email-entry {
-    margin-bottom: 0.5em;
-  }
+.login-container {
+  background-color: white;
+  padding: 20px;
+  border-radius: 5px;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+  width: 300px;
+}
 
-  .password-entry {
-    margin-bottom: 1em;
-  }
+.login-container h2 {
+  text-align: center;
+  margin-bottom: 20px;
+}
+
+.email-entry {
+  margin-bottom: 15px;
+  text-align: left;
+}
+
+.email-entry label {
+  display: block;
+  margin-bottom: 5px;
+}
+
+.password-entry {
+  margin-bottom: 15px;
+  text-align: left;
+}
+
+.password-entry label {
+  display: block;
+  margin-bottom: 5px;
+}
+
+.email-entry input {
+  width: 100%;
+  padding: 10px;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  box-sizing: border-box;
+}
+
+.password-entry input {
+  width: 100%;
+  padding: 10px;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  box-sizing: border-box;
+}
+
+button {
+  width: 100%;
+  padding: 10px;
+  border: none;
+  background-color: #5C6BC0;
+  color: white;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: background-color 0.3s;
+}
+
+button:hover {
+  background-color: #3F51B5;
+}
+
+.button-1 {
+  width: 100%;
+  padding: 10px;
+  border: none;
+  background-color: #5C6BC0;
+  color: white;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: background-color 0.3s;
+}
+
+.button-1:hover {
+  background-color: #3F51B5;
+}
