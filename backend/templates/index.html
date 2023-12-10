@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html>
+<link rel="stylesheet" href="{{ url_for('static', filename='css/index.css') }}">
+<script src="{{ url_for('static', filename='js/index.js') }}"></script>
+<title>Class Credit Sorter</title>
+<body>
+
+<div class="logout">
+    <button class="button" onclick="logout()" role="button">Logout</button>
+</div>
+
+<div class="container">
+    <h2>Please enter class information:</h2>
+    <form onsubmit="handleFormSubmit(event)">
+        <div class="major"><label for="major">Major:</label>
+            <input type="text" id="major" name="major" placeholder="Aeronautical Science"><br><br></div>
+        <div class="minor"><label for="minors">Minor(s):</label>
+            <input type="text" id="minors" name="minors" placeholder="Computer Science, Aeronautical Engineering"><br><br></div>
+        <div class="finClass"><label for="finishedClsses">Finished Classes:</label>
+            <input type="text" id="finishedClasses" name="finishedClasses" placeholder="UNIV101, EGR101"><br><br></div>
+        <div class="SubmitButton">
+            <input class="button-1" type="submit" value="Submit">
+        </div>
+    </form>
+</div>
+</body>
+
+</body>
+</html> 

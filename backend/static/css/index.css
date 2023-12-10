@@ -1,0 +1,70 @@
+body {
+  font-family: Arial, sans-serif;
+  background-color: #f4f4f4;
+  margin: 0;
+  padding: 0;
+  top: 50%;
+  left: 50%;
+}
+
+.container {
+  background-color: white;
+  padding: 20px;
+  border-radius: 5px;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+  width: fit-content;
+  margin: auto;
+  margin-top: 50px;
+  align-items: center;
+  position: relative;
+  transform: translate(0%, 25%);
+}
+
+.container h2 {
+  text-align: center;
+  margin-bottom: 20px;
+}
+
+input[type=text] {
+  width: calc(100% - 22px);
+  padding: 10px;
+  margin-bottom: 15px;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  box-sizing: border-box;
+}
+
+.logout {
+  position: absolute;
+  right: 10px;
+  top: 10px;
+}
+
+.logout button {
+  padding: 10px;
+  border: none;
+  background-color: #5C6BC0;
+  color: white;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: background-color 0.3s;
+}
+
+.logout button:hover {
+  background-color: #3F51B5;
+}
+
+.button-1 {
+  width: calc(100% - 22px);
+  padding: 10px;
+  border: none;
+  background-color: #5C6BC0;
+  color: white;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: background-color 0.3s;
+}
+
+.button-1:hover {
+  background-color: #3F51B5;
+}
